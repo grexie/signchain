@@ -1,0 +1,82 @@
+{
+  "name": "@grexie/signchain",
+  "version": "0.5.1",
+  "description": "Signchain JavaScript Client Library",
+  "type": "module",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "repository": "https://github.com/grexie/signchain",
+  "author": "Signchain <hello@signchain.net>",
+  "license": "MIT",
+  "private": false,
+  "readme": "README.md",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "signchain",
+    "blockchain",
+    "vault",
+    "transaction-signing",
+    "ethereum",
+    "wallet-management",
+    "smart-contract",
+    "crypto",
+    "dapp",
+    "decentralized",
+    "nodejs",
+    "api-client",
+    "blockchain-security",
+    "web3",
+    "solidity",
+    "backend",
+    "private-key-management",
+    "signing-service",
+    "wallet-api",
+    "grexie"
+  ],
+  "scripts": {
+    "clean": "rm -Rf lib",
+    "build": "run-s build:rollup",
+    "build:rollup": "rollup -c",
+    "start": "npm run -s build && run-p start:rollup",
+    "start:rollup": "npm run -s build:rollup -- -w"
+  },
+  "files": [
+    "./README.md",
+    "./lib/index.d.ts",
+    "./lib/index.js",
+    "./lib/index.js.map",
+    "./lib/react.d.ts",
+    "./lib/react.js",
+    "./lib/react.js.map"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-alias": "^5.0.1",
+    "@rollup/plugin-commonjs": "^25.0.5",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/dotenv-flow": "^3.2.0",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "react": "^18.2.0",
+    "rollup": "^4.0.2",
+    "rollup-plugin-define": "^1.0.1",
+    "rollup-plugin-dts": "^6.1.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./react": {
+      "types": "./lib/react.d.ts",
+      "default": "./lib/react.js"
+    }
+  },
+  "dependencies": {
+    "abitype": "^1.0.6",
+    "viem": "^2.21.35"
+  }
+}

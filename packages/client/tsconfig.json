@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "incremental": false,
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "lib": ["dom", "ES2022"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*.json", "src/**/*.ts", "src/**/*.tsx"]
+}
