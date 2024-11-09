@@ -1,15 +1,19 @@
 import type { Abi } from 'abitype';
 import type { ContractFunctionName, ContractFunctionArgs } from 'viem';
 import queryString from 'querystring';
+import crypto from 'crypto';
+import base32Encode from 'base32-encode';
 
 export interface SignchainClientOptions {
   url?: string;
   apiKey: string;
   vaultId: string;
+  authSecretKey?: string | null;
 }
 
 const defaultClientOptions = {
   url: 'https://signchain.net',
+  authSecretKey: null,
 }
 
 export interface Signature {
@@ -90,6 +94,26 @@ export interface UpdateWalletOptions {
   name: string;
 }
 
+const createAuthSignature = (authSecretKey: string, data: Uint8Array, timestamp: Date = new Date()) => {
+  const nonce = crypto.randomBytes(32);
+  const timestampBytes = Buffer.alloc(8);
+  timestampBytes.writeBigUint64BE(BigInt(timestamp.getTime()));
+
+  const hash = crypto.createHash('sha256');
+  hash.update(data);
+  hash.update(nonce);
+  hash.update(timestampBytes);
+  hash.update(Buffer.from(authSecretKey, 'utf8'));
+
+  const signature = [
+    base32Encode(nonce, 'RFC4648').toLowerCase(),
+    base32Encode(timestampBytes, 'RFC4648').toLowerCase(),
+    base32Encode(hash.digest(), 'RFC4648').toLowerCase(),
+  ].join('.');
+
+  return signature;
+};
+
 export class SignchainClient {
   readonly options: Required<SignchainClientOptions>;
 
@@ -119,20 +143,29 @@ export class SignchainClient {
       args: options.args,
     });
 
+    const bodyBuffer = Buffer.from(JSON.stringify(body, (k, v) => {
+      if (typeof v === 'bigint') {
+        return v.toString();
+      } else {
+        return v;
+      }
+    }, 2), 'utf8');
+
+    const extraHeaders: Record<string, string> = {};
+
+    if (this.options.authSecretKey) {
+      extraHeaders['X-Vault-Auth-Signature'] = createAuthSignature(this.options.authSecretKey, bodyBuffer);
+    }
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.options.apiKey}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        ...extraHeaders,
       },
-      body: JSON.stringify(body, (k, v) => {
-        if (typeof v === 'bigint') {
-          return v.toString();
-        } else {
-          return v;
-        }
-      }, 2),
+      body: bodyBuffer,
     });
 
     const json: APIResponse = await response.json();

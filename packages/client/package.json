@@ -1,6 +1,6 @@
 {
   "name": "@grexie/signchain",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Signchain JavaScript Client Library",
   "type": "module",
   "module": "./lib/index.js",
@@ -60,6 +60,7 @@
     "@types/dotenv-flow": "^3.2.0",
     "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
+    "base32-encode": "^2.0.0",
     "react": "^18.2.0",
     "rollup": "^4.0.2",
     "rollup-plugin-define": "^1.0.1",
